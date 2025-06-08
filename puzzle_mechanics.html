@@ -58,6 +58,15 @@
     font-weight: bold;
   }
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX9NRMTKM5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZX9NRMTKM5');
+</script>
 </head>
 <body>
 <h1>X4 Torus Aeternal Switch Puzzle</h1>
@@ -68,58 +77,79 @@
 </div>
 
 <div class="explanation-section">
-  <h2>How the Puzzle Works (Like I'm Five!)</h2>
-  <p>Imagine you have 8 special light switches, numbered 1 to 8. Your big goal is to turn ALL of them ON, so they all glow green!</p>
+  <h2>How the Puzzle Works</h2>
+  <p>
+    The X4 Torus Aeternal Switch Puzzle is a logic challenge with 8 switches. Each switch can be ON (green) or OFF (red), and can be either locked or unlocked. Your goal is to turn <strong>all 8 switches ON</strong> at the same time.
+  </p>
 
-  <h3>The Switches and Lights</h3>
+  <h3>Switches, Locks, and the Three-Phase Move</h3>
   <ul>
-    <li>Each switch can be either ON (green light) or OFF (red light). Switches are red when OFF and green when ON.</li>
-    <li>Some switches are "locked". When a switch is locked, you cannot press it.</li>
+    <li>Each switch is numbered 1 to 8. ON = green, OFF = red.</li>
+    <li>Some switches may be <strong>locked</strong>. You can only press switches that are <strong>unlocked</strong>.</li>
+    <li>When you press an unlocked switch, a <strong>three-phase process</strong> happens:
+      <ol>
+        <li>
+          <strong>Reset Phase:</strong> All locks are cleared. Every switch becomes unlocked.
+        </li>
+        <li>
+          <strong>Flip Phase:</strong> The switch you pressed, <em>and</em> certain other switches connected to it, will toggle their ON/OFF state. (If ON, they turn OFF; if OFF, they turn ON.)
+        </li>
+        <li>
+          <strong>Re-lock Phase:</strong> The puzzle alternates between two lock modes:
+          <ul>
+            <li><strong>Mode 1:</strong> Switches 1, 2, and 3 are unlocked; switches 6, 7, and 8 are locked.</li>
+            <li><strong>Mode 2:</strong> Switches 1, 2, and 3 are locked; switches 6, 7, and 8 are unlocked.</li>
+          </ul>
+          After every move, the lock mode toggles. If you were in Mode 1, you switch to Mode 2, and vice versa.
+        </li>
+      </ol>
+    </li>
   </ul>
 
-  <h3>The Magic Button Press</h3>
-  <p>When you press a switch, something cool happens in three steps:</p>
-  <ol>
-    <li><strong>Step 1: Unlock Everything!</strong> Poof! Every switch becomes unlocked, no matter what.</li>
-    <li><strong>Step 2: Flip the Lights!</strong> The switch you pressed, and some other special switches connected to it, will flip their lights. If they were ON, they turn OFF. If they were OFF, they turn ON! It's like a chain reaction!</li>
-    <li><strong>Step 3: Re-lock Some Switches!</strong> After the lights flip, there are two "lock modes" for the puzzle:
-      <ul>
-        <li><strong>Mode 1:</strong> Switches 1, 2, and 3 are unlocked, but switches 6, 7, and 8 get locked.</li>
-        <li><strong>Mode 2:</strong> Switches 1, 2, and 3 get locked, but switches 6, 7, and 8 are unlocked.</li>
-      </ul>
-      Every time you press a switch, the puzzle switches between these two lock modes. If it was in Mode 1, it goes to Mode 2. If it was in Mode 2, it goes to Mode 1!</li>
-  </ol>
-
-  <h3>Switch Connections (What Flips What)</h3>
-  <p>When you press a switch, it doesn't just change itself! It also changes some other switches connected to it. Here's how they are connected:</p>
+  <h3>Switch Connections: What Gets Flipped?</h3>
+  <p>
+    When you press a switch, it always flips itself. It may also flip other switches, depending on its connections. Here is the map:
+  </p>
   <ul>
-    <li><strong>Press Switch 1:</strong> Flips Switch 2</li>
-    <li><strong>Press Switch 2:</strong> Flips Switches 1 and 3</li>
-    <li><strong>Press Switch 3:</strong> Flips Switch 4</li>
-    <li><strong>Press Switch 4:</strong> Flips Switch 5</li>
-    <li><strong>Press Switch 5:</strong> Flips Switch 4</li>
-    <li><strong>Press Switch 6:</strong> Flips Switch 5</li>
-    <li><strong>Press Switch 7:</strong> Flips Switch 8</li>
-    <li><strong>Press Switch 8:</strong> Flips Switches 6 and 7</li>
+    <li><strong>Press Switch 1:</strong> Flips itself and Switch 2</li>
+    <li><strong>Press Switch 2:</strong> Flips itself, Switch 1, and Switch 3</li>
+    <li><strong>Press Switch 3:</strong> Flips itself and Switch 4</li>
+    <li><strong>Press Switch 4:</strong> Flips itself and Switch 5</li>
+    <li><strong>Press Switch 5:</strong> Flips itself and Switch 4</li>
+    <li><strong>Press Switch 6:</strong> Flips itself and Switch 5</li>
+    <li><strong>Press Switch 7:</strong> Flips itself and Switch 8</li>
+    <li><strong>Press Switch 8:</strong> Flips itself, Switch 6, and Switch 7</li>
+  </ul>
+  <p>
+    This means pressing a switch can have a chain reaction, toggling multiple switches at once.
+  </p>
+
+  <h3>How to Play and Win</h3>
+  <ul>
+    <li>You can only press switches that are currently unlocked (not locked).</li>
+    <li>After every move, the lock mode alternates, restricting which switches you can press next.</li>
+    <li>Your mission: Find a sequence of moves that turns all 8 switches ON at the same time.</li>
   </ul>
 
-  <h3>The Rules to Win!</h3>
+  <h3>Strategy and Tips</h3>
   <ul>
-    <li>You can only press switches that are NOT locked.</li>
-    <li>Your mission is to find the right sequence of button presses to make all 8 lights turn green!</li>
+    <li>
+      <strong>Plan for the Lock Alternation:</strong> After every move, the set of switches you can press changes. If you just pressed a switch while switches 1-3 were unlocked, now only switches 6-8 will be unlocked (and vice versa). This means you often need to alternate between the two groups to make progress.
+    </li>
+    <li>
+      <strong>Understand the Connections:</strong> Pressing a switch can flip itself and its neighbors. For example, pressing Switch 2 flips Switches 1, 2, and 3. Use this to your advantage to flip multiple switches at once.
+    </li>
+    <li>
+      <strong>Think Ahead:</strong> Because of the lock alternation and the chain reactions, you need to plan several moves ahead. Sometimes you may need to "set up" the board by flipping switches in one group so you can finish with the other group.
+    </li>
+    <li>
+      <strong>Look for Patterns:</strong> Try to notice which switches affect which others, and how the lock mode changes your available options. Sometimes, flipping a switch may undo progress if you aren't careful.
+    </li>
+    <li>
+      <strong>Don't Give Up:</strong> The puzzle is designed to be tricky! If you get stuck, try to reset and experiment with different starting moves.
+    </li>
   </ul>
-
-  <h3>Why is it Tricky?</h3>
-  <p>It's tricky because when you press one switch, it changes other lights too! And the locks keep changing, which means you can't always press the same switch. You have to think ahead!</p>
-
-  <h3>Tips to Solve on Your Own</h3>
-  <ul>
-    <li><strong>Think Ahead:</strong> This puzzle is like a brain game. You need to think about which switch to press next to get closer to turning all lights green.</li>
-    <li><strong>Understand the Connections:</strong> Try to remember which switches flip other switches. (For example, pressing switch 1 only flips switch 2, but pressing switch 2 flips switches 1 and 3!)</li>
-    <li><strong>Watch the Locks:</strong> Pay attention to which switches get locked and unlocked. This tells you which switches you can press next.</li>
-    <li><strong>Don't Give Up!</strong> This puzzle is like a brain game. Keep trying different switches and see what happens. You'll get better with practice!</li>
-  </ul>
-  <p class="important-note">Remember, the goal is to make all 8 switches glow green!</p>
+  <p class="important-note">The goal: All 8 switches ON (green) at the same time. Good luck!</p>
 </div>
 
 <footer>
