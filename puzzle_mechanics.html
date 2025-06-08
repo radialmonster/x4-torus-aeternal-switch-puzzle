@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>X4 Torus Aeternal Switch Puzzle - Puzzle Mechanics</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;text-align:center;margin:2rem;background:#000;color:#fff;}
+  .mode-selector{margin-bottom:2rem;}
+  .mode-btn{padding:.5rem 1rem;margin:0 .5rem;border:2px solid #666;background:#333;color:#fff;cursor:pointer;border-radius:.25rem;}
+  .mode-btn.active{background:#2e7d32;color:white;}
+  .board{display:grid;grid-template-columns:repeat(2,auto) 2rem repeat(2,auto);grid-gap:1rem;justify-content:center;margin-bottom:2rem;}
+  .space{width:2rem;height:2rem;}
+  .switch{
+    width:4rem;height:4rem;border:2px solid #666;border-radius:.5rem;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.25rem;cursor:pointer;user-select:none;transition:background .2s;
+  }
+  .off{background:#c62828;}  /* red */
+  .on {background:#2e7d32;}  /* green */
+  .locked{border-color:#ffeb3b !important;box-shadow:0 0 8px #ffeb3b;}
+  .lock-toggle{cursor:pointer;font-size:.8rem;margin-top:.25rem;display:block;color:#ccc;}
+  ol{max-width:40rem;margin:0 auto;text-align:left;color:#fff;}
+  .unsolvable{color:#ff6666;font-weight:bold;}
+  .mode-description{margin-bottom:1rem;padding:1rem;background:#222;border:1px solid #444;border-radius:.5rem;max-width:50rem;margin:0 auto 2rem auto;color:#fff;}
+  h1, h2{color:#fff;}
+  .phase-details{background:#333;padding:1rem;margin:1rem 0;border-radius:.5rem;border-left:4px solid #2e7d32;}
+  .off-set{color:#ff6666;font-weight:bold;}
+  .upstream-walk{color:#ffeb3b;}
+  .explanation-section {
+    background: #222;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    border: 1px solid #444;
+    border-radius: .75rem;
+    max-width: 60rem;
+    text-align: left;
+  }
+  .explanation-section h3 {
+    color: #2e7d32;
+    margin-top: 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .explanation-section p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .explanation-section ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .explanation-section li {
+    margin-bottom: 0.5rem;
+  }
+  .important-note {
+    color: #ffeb3b;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<h1>X4 Torus Aeternal Switch Puzzle</h1>
+<p><a href="index.html" style="color:#ffeb3b; text-decoration:underline;">Back to Puzzle</a></p>
+
+<div style="margin-bottom:1rem;padding:1rem;background:#444;border:1px solid #666;border-radius:.5rem;max-width:50rem;margin:0 auto 1rem auto;color:#ffeb3b;">
+  <strong>⚠️ DISCLAIMER:</strong> The ruleset explained here is estimated based on observations of a reference puzzle and may be incorrect. We are attempting to reverse-engineer the correct behavior by comparing our implementation against known reference results. If you find the steps provided are not correct and want to contribute, please visit the Data Collection interface on the main puzzle page.</strong>
+</div>
+
+<div class="explanation-section">
+  <h2>How the Puzzle Works (Like I'm Five!)</h2>
+  <p>Imagine you have 8 special light switches, numbered 1 to 8. Your big goal is to turn ALL of them ON, so they all glow green!</p>
+
+  <h3>The Switches and Lights</h3>
+  <ul>
+    <li>Each switch can be either ON (green light) or OFF (red light). Switches are red when OFF and green when ON.</li>
+    <li>Some switches are "locked". When a switch is locked, you cannot press it.</li>
+  </ul>
+
+  <h3>The Magic Button Press</h3>
+  <p>When you press a switch, something cool happens in three steps:</p>
+  <ol>
+    <li><strong>Step 1: Unlock Everything!</strong> Poof! Every switch becomes unlocked, no matter what.</li>
+    <li><strong>Step 2: Flip the Lights!</strong> The switch you pressed, and some other special switches connected to it, will flip their lights. If they were ON, they turn OFF. If they were OFF, they turn ON! It's like a chain reaction!</li>
+    <li><strong>Step 3: Re-lock Some Switches!</strong> After the lights flip, there are two "lock modes" for the puzzle:
+      <ul>
+        <li><strong>Mode 1:</strong> Switches 1, 2, and 3 are unlocked, but switches 6, 7, and 8 get locked.</li>
+        <li><strong>Mode 2:</strong> Switches 1, 2, and 3 get locked, but switches 6, 7, and 8 are unlocked.</li>
+      </ul>
+      Every time you press a switch, the puzzle switches between these two lock modes. If it was in Mode 1, it goes to Mode 2. If it was in Mode 2, it goes to Mode 1!</li>
+  </ol>
+
+  <h3>Switch Connections (What Flips What)</h3>
+  <p>When you press a switch, it doesn't just change itself! It also changes some other switches connected to it. Here's how they are connected:</p>
+  <ul>
+    <li><strong>Press Switch 1:</strong> Flips Switch 2</li>
+    <li><strong>Press Switch 2:</strong> Flips Switches 1 and 3</li>
+    <li><strong>Press Switch 3:</strong> Flips Switch 4</li>
+    <li><strong>Press Switch 4:</strong> Flips Switch 5</li>
+    <li><strong>Press Switch 5:</strong> Flips Switch 4</li>
+    <li><strong>Press Switch 6:</strong> Flips Switch 5</li>
+    <li><strong>Press Switch 7:</strong> Flips Switch 8</li>
+    <li><strong>Press Switch 8:</strong> Flips Switches 6 and 7</li>
+  </ul>
+
+  <h3>The Rules to Win!</h3>
+  <ul>
+    <li>You can only press switches that are NOT locked.</li>
+    <li>Your mission is to find the right sequence of button presses to make all 8 lights turn green!</li>
+  </ul>
+
+  <h3>Why is it Tricky?</h3>
+  <p>It's tricky because when you press one switch, it changes other lights too! And the locks keep changing, which means you can't always press the same switch. You have to think ahead!</p>
+
+  <h3>Tips to Solve on Your Own</h3>
+  <ul>
+    <li><strong>Think Ahead:</strong> This puzzle is like a brain game. You need to think about which switch to press next to get closer to turning all lights green.</li>
+    <li><strong>Understand the Connections:</strong> Try to remember which switches flip other switches. (For example, pressing switch 1 only flips switch 2, but pressing switch 2 flips switches 1 and 3!)</li>
+    <li><strong>Watch the Locks:</strong> Pay attention to which switches get locked and unlocked. This tells you which switches you can press next.</li>
+    <li><strong>Don't Give Up!</strong> This puzzle is like a brain game. Keep trying different switches and see what happens. You'll get better with practice!</li>
+  </ul>
+  <p class="important-note">Remember, the goal is to make all 8 switches glow green!</p>
+</div>
+
+<footer>
+  <p>This project is located at <a href="https://github.com/radialmonster/x4-torus-aeternal-switch-puzzle" style="color:#ffeb3b; text-decoration:underline;">https://github.com/radialmonster/x4-torus-aeternal-switch-puzzle</a></p>
+  <p>People may donate to me at <a href="https://www.paypal.me/radialmonster" style="color:#ffeb3b; text-decoration:underline;">www.paypal.me/radialmonster</a> if this helped them</p>
+</footer>
+</body>
+</html>
