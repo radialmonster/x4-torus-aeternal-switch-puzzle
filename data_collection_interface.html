@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>X4 Torus Aeternal Switch Puzzle - Data Collection</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:2rem;background:#000;color:#fff;}
+  .container{max-width:80rem;margin:0 auto;}
+  .section{margin-bottom:2rem;padding:1rem;background:#222;border:1px solid #444;border-radius:.5rem;}
+  .input-group{margin-bottom:1rem;}
+  label{display:block;margin-bottom:.5rem;color:#fff;font-weight:bold;}
+  input, textarea, select{padding:.5rem;border:1px solid #666;background:#333;color:#fff;border-radius:.25rem;width:100%;box-sizing:border-box;}
+  button{padding:.75rem 1.5rem;margin:.5rem;border:none;background:#2e7d32;color:#fff;cursor:pointer;border-radius:.25rem;font-size:1rem;}
+  button:hover{background:#388e3c;}
+  button.secondary{background:#666;}
+  button.secondary:hover{background:#777;}
+  .switch-board{display:grid;grid-template-columns:repeat(2,auto) 2rem repeat(2,auto);grid-gap:1rem;justify-content:center;margin:1rem 0;}
+  .space{width:2rem;height:2rem;}
+  .data-switch{
+    width:4rem;height:4rem;border:2px solid #666;border-radius:.5rem;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.25rem;cursor:pointer;user-select:none;transition:background .2s;
+  }
+  .data-switch.off{background:#c62828;}  /* red */
+  .data-switch.on {background:#2e7d32;}  /* green */
+  .data-switch.locked{border-color:#ffeb3b !important;box-shadow:0 0 8px #ffeb3b;}
+  .lock-toggle{cursor:pointer;font-size:.8rem;margin-top:.25rem;display:block;color:#ccc;text-decoration:underline;}
+  .switch-cell{text-align:center;}
+  .data-log{background:#111;border:1px solid #333;padding:1rem;border-radius:.25rem;max-height:20rem;overflow-y:auto;font-family:monospace;font-size:.9rem;}
+  .interaction-entry{margin-bottom:1rem;padding:.75rem;background:#333;border-left:3px solid #2e7d32;border-radius:.25rem;}
+  .timestamp{color:#888;font-size:.8rem;}
+  .state-display{font-family:monospace;background:#444;padding:.5rem;margin:.25rem 0;border-radius:.25rem;}
+  .voice-clue{color:#ffeb3b;font-weight:bold;}
+  .changes{color:#4caf50;}
+  h1,h2,h3{color:#fff;}
+  .warning{background:#ff6600;color:#fff;padding:.5rem;border-radius:.25rem;margin-bottom:1rem;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>X4 Torus Aeternal Switch Puzzle - Data Collection</h1>
+<p><a href="index.html" style="color:#ffeb3b; text-decoration:underline;">Go to Puzzle Simulator</a></p>
+  
+  <div class="warning">
+    <strong>⚠️ Data Collection Mode:</strong> Use this interface to systematically record interactions with the reference puzzle. Each logged interaction helps us understand the true puzzle mechanics.
+  </div>
+
+  <div class="section">
+    <h2>Record New Interaction</h2>
+    
+    <div class="input-group">
+      <label>Starting State (before action):</label>
+      <div id="startBoard" class="switch-board"></div>
+    </div>
+
+    <div class="input-group">
+      <label>Action Taken:</label>
+      <select id="actionTaken">
+        <option value="">Select action...</option>
+        <option value="Flipped switch 1">Flipped switch 1</option>
+        <option value="Flipped switch 2">Flipped switch 2</option>
+        <option value="Flipped switch 3">Flipped switch 3</option>
+        <option value="Flipped switch 4">Flipped switch 4</option>
+        <option value="Flipped switch 5">Flipped switch 5</option>
+        <option value="Flipped switch 6">Flipped switch 6</option>
+        <option value="Flipped switch 7">Flipped switch 7</option>
+        <option value="Flipped switch 8">Flipped switch 8</option>
+        <option value="Other">Other (specify in notes)</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Voice Clue (if any):</label>
+      <input type="text" id="voiceClue" placeholder="e.g., 2,5,7 or leave empty if no clue">
+    </div>
+
+    <div class="input-group">
+      <label>Ending State (after action):</label>
+      <div id="endBoard" class="switch-board"></div>
+    </div>
+
+    <div class="input-group">
+      <label>Notes:</label>
+      <textarea id="notes" rows="3" placeholder="Any additional observations, timing details, or context..."></textarea>
+    </div>
+
+    <button onclick="logInteraction()">Log This Interaction</button>
+    <button class="secondary" onclick="resetAllFormFields()">Clear Form</button>
+  </div>
+
+  <div class="section">
+    <h2>Recorded Interactions</h2>
+    <div style="margin-bottom:1rem;">
+      <button onclick="exportData()">Export Data as JSON</button>
+      <button class="secondary" onclick="clearAllData()">Clear All Data</button>
+      <button class="secondary" onclick="analyzePatterns()">Analyze Patterns</button>
+    </div>
+    <div id="interactionLog" class="data-log">
+      <em>No interactions recorded yet.</em>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Pattern Analysis</h2>
+    <div id="analysisResults" class="data-log">
+      <em>Click "Analyze Patterns" to see analysis of recorded data.</em>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Quick State Entry</h2>
+    <p>For faster data entry, you can paste state strings:</p>
+    <div class="input-group">
+      <label>Starting State String (format: "1:ON/Locked, 2:OFF/Unlocked, ..."):</label>
+      <input type="text" id="startStateString" placeholder="1:OFF/Unlocked, 2:OFF/Unlocked, 3:OFF/Unlocked, 4:OFF/Unlocked, 5:OFF/Unlocked, 6:OFF/Unlocked, 7:OFF/Unlocked, 8:OFF/Unlocked">
+      <button class="secondary" onclick="parseStartState()">Parse Start State</button>
+    </div>
+    <div class="input-group">
+      <label>Ending State String:</label>
+      <input type="text" id="endStateString" placeholder="1:OFF/Unlocked, 2:OFF/Unlocked, 3:OFF/Unlocked, 4:OFF/Unlocked, 5:OFF/Unlocked, 6:OFF/Unlocked, 7:OFF/Unlocked, 8:OFF/Unlocked">
+      <button class="secondary" onclick="parseEndState()">Parse End State</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Load the puzzle logger
+let puzzleData = JSON.parse(localStorage.getItem('puzzleData') || '{"sessions": [], "interactions": []}');
+
+// Switch state storage
+let startSwitchStates = [false, false, false, false, false, false, false, false]; // ON/OFF
+let startLockStates = [false, false, false, false, false, false, false, false];   // Locked/Unlocked
+let endSwitchStates = [false, false, false, false, false, false, false, false];   // ON/OFF
+let endLockStates = [false, false, false, false, false, false, false, false];     // Locked/Unlocked
+
+// Create visual switch boards
+function createSwitchBoard(boardId, switchStates, lockStates, prefix) {
+  const board = document.getElementById(boardId);
+  board.innerHTML = '';
+  
+  for (let i = 0; i < 8; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'switch-cell';
+    
+    const switchBtn = document.createElement('div');
+    switchBtn.className = `data-switch ${switchStates[i] ? 'on' : 'off'}${lockStates[i] ? ' locked' : ''}`;
+    switchBtn.textContent = i + 1;
+    switchBtn.onclick = () => {
+      switchStates[i] = !switchStates[i];
+      updateSwitchBoard(boardId, switchStates, lockStates, prefix);
+    };
+    
+    const lockToggle = document.createElement('span');
+    lockToggle.className = 'lock-toggle';
+    lockToggle.textContent = lockStates[i] ? 'Locked' : 'Unlocked';
+    lockToggle.style.color = lockStates[i] ? '#ff6666' : '#2e7d32';
+    lockToggle.onclick = (e) => {
+      e.stopPropagation();
+      lockStates[i] = !lockStates[i];
+      updateSwitchBoard(boardId, switchStates, lockStates, prefix);
+    };
+    
+    cell.appendChild(switchBtn);
+    cell.appendChild(lockToggle);
+    board.appendChild(cell);
+    
+    // Add spacers after switches 2 and 6 (indices 1 and 5)
+    if (i === 1 || i === 5) {
+      const spacer = document.createElement('div');
+      spacer.className = 'space';
+      board.appendChild(spacer);
+    }
+  }
+}
+
+function updateSwitchBoard(boardId, switchStates, lockStates, prefix) {
+  const board = document.getElementById(boardId);
+  const cells = board.querySelectorAll('.switch-cell');
+  
+  cells.forEach((cell, i) => {
+    const switchBtn = cell.querySelector('.data-switch');
+    const lockToggle = cell.querySelector('.lock-toggle');
+    
+    switchBtn.className = `data-switch ${switchStates[i] ? 'on' : 'off'}${lockStates[i] ? ' locked' : ''}`;
+    lockToggle.textContent = lockStates[i] ? 'Locked' : 'Unlocked';
+    lockToggle.style.color = lockStates[i] ? '#ff6666' : '#2e7d32';
+  });
+}
+
+function getSwitchState(prefix) {
+  const state = {};
+  const switchStates = prefix === 'start' ? startSwitchStates : endSwitchStates;
+  const lockStates = prefix === 'start' ? startLockStates : endLockStates;
+  
+  for (let i = 0; i < 8; i++) {
+    state[i + 1] = {
+      on: switchStates[i],
+      locked: lockStates[i]
+    };
+  }
+  return state;
+}
+
+function setSwitchState(prefix, state) {
+  const switchStates = prefix === 'start' ? startSwitchStates : endSwitchStates;
+  const lockStates = prefix === 'start' ? startLockStates : endLockStates;
+  
+  for (let i = 1; i <= 8; i++) {
+    if (state[i]) {
+      switchStates[i - 1] = state[i].on;
+      lockStates[i - 1] = state[i].locked;
+    }
+  }
+  
+  const boardId = prefix === 'start' ? 'startBoard' : 'endBoard';
+  updateSwitchBoard(boardId, switchStates, lockStates, prefix);
+}
+
+function parseStateString(stateString) {
+  const state = {};
+  const parts = stateString.split(',').map(s => s.trim());
+  
+  parts.forEach(part => {
+    const match = part.match(/(\d+):(ON|OFF)\/(Locked|Unlocked)/i);
+    if (match) {
+      const switchNum = parseInt(match[1]);
+      const isOn = match[2].toUpperCase() === 'ON';
+      const isLocked = match[3].toLowerCase() === 'locked';
+      state[switchNum] = { on: isOn, locked: isLocked };
+    }
+  });
+  
+  return state;
+}
+
+function parseStartState() {
+  const stateString = document.getElementById('startStateString').value;
+  const state = parseStateString(stateString);
+  setSwitchState('start', state);
+}
+
+function parseEndState() {
+  const stateString = document.getElementById('endStateString').value;
+  const state = parseStateString(stateString);
+  setSwitchState('end', state);
+}
+
+function formatStateForDisplay(state) {
+  let result = '';
+  for (let i = 1; i <= 8; i++) {
+    if (state[i]) {
+      const onOff = state[i].on ? 'ON' : 'OFF';
+      const lockStatus = state[i].locked ? 'Locked' : 'Unlocked';
+      result += `${i}:${onOff}/${lockStatus}`;
+      if (i < 8) result += ', ';
+    }
+  }
+  return result;
+}
+
+function calculateChanges(startState, endState) {
+  const changes = [];
+  for (let i = 1; i <= 8; i++) {
+    if (startState[i] && endState[i]) {
+      if (startState[i].on !== endState[i].on) {
+        const change = endState[i].on ? 'OFF→ON' : 'ON→OFF';
+        changes.push(`Switch ${i}: ${change}`);
+      }
+      if (startState[i].locked !== endState[i].locked) {
+        const change = endState[i].locked ? 'Unlocked→Locked' : 'Locked→Unlocked';
+        changes.push(`Switch ${i}: ${change}`);
+      }
+    }
+  }
+  return changes;
+}
+
+function logInteraction() {
+  const startState = getSwitchState('start');
+  const endState = getSwitchState('end');
+  const action = document.getElementById('actionTaken').value;
+  const voiceClue = document.getElementById('voiceClue').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  if (!action) {
+    alert('Please select an action');
+    return;
+  }
+
+  const interaction = {
+    timestamp: new Date().toISOString(),
+    startState: startState,
+    action: action,
+    voiceClue: voiceClue || null,
+    endState: endState,
+    notes: notes,
+    changes: calculateChanges(startState, endState)
+  };
+
+  puzzleData.interactions.push(interaction);
+  localStorage.setItem('puzzleData', JSON.stringify(puzzleData));
+  
+  updateInteractionDisplay();
+  
+  // Set starting state for next interaction to be the current ending state
+  startSwitchStates = [...endSwitchStates];
+  startLockStates = [...endLockStates];
+  updateSwitchBoard('startBoard', startSwitchStates, startLockStates, 'start');
+
+  resetFormForNextInteraction();
+  
+  console.log('Logged interaction:', interaction);
+}
+
+function resetFormForNextInteraction() {
+  // Clear ending state for next interaction
+  endSwitchStates.fill(false);
+  endLockStates.fill(false);
+  updateSwitchBoard('endBoard', endSwitchStates, endLockStates, 'end');
+
+  // Clear form fields
+  document.getElementById('actionTaken').value = '';
+  document.getElementById('voiceClue').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('startStateString').value = ''; // Clear quick entry string
+  document.getElementById('endStateString').value = '';   // Clear quick entry string
+}
+
+function clearForm() { // Renamed from clearForm to resetAllFormFields for clarity
+  // Reset all switch states
+  startSwitchStates.fill(false);
+  startLockStates.fill(false);
+  endSwitchStates.fill(false);
+  endLockStates.fill(false);
+  
+  // Update visual boards
+  updateSwitchBoard('startBoard', startSwitchStates, startLockStates, 'start');
+  updateSwitchBoard('endBoard', endSwitchStates, endLockStates, 'end');
+  
+  // Clear all form fields
+  document.getElementById('actionTaken').value = '';
+  document.getElementById('voiceClue').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('startStateString').value = '';
+  document.getElementById('endStateString').value = '';
+}
+
+function escapeHTML(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+function updateInteractionDisplay() {
+  const logEl = document.getElementById('interactionLog');
+  
+  if (puzzleData.interactions.length === 0) {
+    logEl.innerHTML = '<em>No interactions recorded yet.</em>';
+    return;
+  }
+
+  let html = '';
+  puzzleData.interactions.forEach((interaction, index) => {
+    html += `
+      <div class="interaction-entry">
+        <div class="timestamp">Interaction #${index + 1} - ${new Date(interaction.timestamp).toLocaleString()}</div>
+        <div><strong>Action:</strong> ${escapeHTML(interaction.action)}</div>
+        ${interaction.voiceClue ? `<div class="voice-clue"><strong>Voice Clue:</strong> ${escapeHTML(interaction.voiceClue)}</div>` : ''}
+        <div class="state-display"><strong>Start:</strong> ${escapeHTML(formatStateForDisplay(interaction.startState))}</div>
+        <div class="state-display"><strong>End:</strong> ${escapeHTML(formatStateForDisplay(interaction.endState))}</div>
+        ${interaction.changes.length > 0 ? `<div class="changes"><strong>Changes:</strong> ${escapeHTML(interaction.changes.join(', '))}</div>` : ''}
+        ${interaction.notes ? `<div><strong>Notes:</strong> ${escapeHTML(interaction.notes)}</div>` : ''}
+      </div>
+    `;
+  });
+  
+  logEl.innerHTML = html;
+}
+
+function exportData() {
+  const dataStr = JSON.stringify(puzzleData, null, 2);
+  const dataBlob = new Blob([dataStr], {type: 'application/json'});
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `puzzle_data_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAllData() {
+  if (confirm('Are you sure you want to clear all recorded data? This cannot be undone.')) {
+    puzzleData = {sessions: [], interactions: []};
+    localStorage.setItem('puzzleData', JSON.stringify(puzzleData));
+    updateInteractionDisplay();
+    document.getElementById('analysisResults').innerHTML = '<em>Click "Analyze Patterns" to see analysis of recorded data.</em>';
+  }
+}
+
+function analyzePatterns() {
+  const analysisEl = document.getElementById('analysisResults');
+  
+  if (puzzleData.interactions.length === 0) {
+    analysisEl.innerHTML = '<em>No data to analyze yet.</em>';
+    return;
+  }
+
+  let analysis = '<h3>Pattern Analysis Results</h3>';
+  
+  // Voice clue analysis
+  const voiceClues = puzzleData.interactions.filter(i => i.voiceClue).map(i => i.voiceClue);
+  analysis += `<div><strong>Voice Clues Recorded:</strong> ${voiceClues.length > 0 ? voiceClues.join(', ') : 'None'}</div>`;
+  
+  // Lock pattern analysis
+  const lockingEvents = [];
+  const unlockingEvents = [];
+  
+  puzzleData.interactions.forEach((interaction, index) => {
+    interaction.changes.forEach(change => {
+      if (change.includes('→Locked')) {
+        lockingEvents.push({interaction: index + 1, change, action: interaction.action, voiceClue: interaction.voiceClue});
+      }
+      if (change.includes('→Unlocked')) {
+        unlockingEvents.push({interaction: index + 1, change, action: interaction.action, voiceClue: interaction.voiceClue});
+      }
+    });
+  });
+  
+  analysis += `<div style="margin-top:1rem;"><strong>Locking Events:</strong></div>`;
+  if (lockingEvents.length > 0) {
+    lockingEvents.forEach(event => {
+      analysis += `<div style="margin-left:1rem;">Interaction ${event.interaction}: ${event.change} (Action: ${event.action}${event.voiceClue ? ', Voice: ' + event.voiceClue : ''})</div>`;
+    });
+  } else {
+    analysis += '<div style="margin-left:1rem;"><em>No locking events recorded</em></div>';
+  }
+  
+  analysis += `<div style="margin-top:1rem;"><strong>Unlocking Events:</strong></div>`;
+  if (unlockingEvents.length > 0) {
+    unlockingEvents.forEach(event => {
+      analysis += `<div style="margin-left:1rem;">Interaction ${event.interaction}: ${event.change} (Action: ${event.action}${event.voiceClue ? ', Voice: ' + event.voiceClue : ''})</div>`;
+    });
+  } else {
+    analysis += '<div style="margin-left:1rem;"><em>No unlocking events recorded</em></div>';
+  }
+  
+  // Action frequency
+  const actionCounts = {};
+  puzzleData.interactions.forEach(i => {
+    actionCounts[i.action] = (actionCounts[i.action] || 0) + 1;
+  });
+  
+  analysis += `<div style="margin-top:1rem;"><strong>Action Frequency:</strong></div>`;
+  Object.entries(actionCounts).forEach(([action, count]) => {
+    analysis += `<div style="margin-left:1rem;">${action}: ${count} times</div>`;
+  });
+  
+  analysis += `<div style="margin-top:1rem;"><strong>Total Interactions:</strong> ${puzzleData.interactions.length}</div>`;
+  
+  analysisEl.innerHTML = analysis;
+}
+
+// Initialize switch boards and display
+createSwitchBoard('startBoard', startSwitchStates, startLockStates, 'start');
+createSwitchBoard('endBoard', endSwitchStates, endLockStates, 'end');
+updateInteractionDisplay();
+</script>
+<footer>
+  <p>This project is located at <a href="https://github.com/radialmonster/x4-torus-aeternal-switch-puzzle" style="color:#ffeb3b; text-decoration:underline;">https://github.com/radialmonster/x4-torus-aeternal-switch-puzzle</a></p>
+  <p>People may donate to me at <a href="https://www.paypal.me/radialmonster" style="color:#ffeb3b; text-decoration:underline;">www.paypal.me/radialmonster</a> if this helped them</p>
+</footer>
