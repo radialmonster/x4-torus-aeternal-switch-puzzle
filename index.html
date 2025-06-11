@@ -118,9 +118,17 @@
   }
 
 @media (max-width: 600px) and (orientation: portrait) {
+  /* Reduce outer margin */
   body {
     margin: 1rem;
   }
+
+  /* Slightly smaller switches so total grid fits */
+  :root {
+    --switch-size: clamp(var(--switch-min), 18vw, var(--switch-max));
+  }
+
+  /* Keep a touch of inner padding for aesthetics */
   .board {
     padding: 0 0.5rem;
   }
