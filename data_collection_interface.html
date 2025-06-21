@@ -146,6 +146,8 @@ function createSwitchBoard(boardId, switchStates, lockStates, prefix) {
   const board = document.getElementById(boardId);
   board.innerHTML = '';
   
+  // Create all switch cells first
+  const cells = [];
   for (let i = 0; i < 8; i++) {
     const cell = document.createElement('div');
     cell.className = 'switch-cell';
@@ -170,15 +172,29 @@ function createSwitchBoard(boardId, switchStates, lockStates, prefix) {
     
     cell.appendChild(switchBtn);
     cell.appendChild(lockToggle);
-    board.appendChild(cell);
-    
-    // Add spacers after switches 2 and 6 (indices 1 and 5)
-    if (i === 1 || i === 5) {
-      const spacer = document.createElement('div');
-      spacer.className = 'space';
-      board.appendChild(spacer);
-    }
+    cells.push(cell);
   }
+  
+  // Add switches to board in visual order
+  // Top row: 1, 2, gap, 3, 4 (indices 0, 1, 2, 3)
+  board.appendChild(cells[0]); // Switch 1
+  board.appendChild(cells[1]); // Switch 2
+  // Add spacer after switch 2
+  const spacer1 = document.createElement('div');
+  spacer1.className = 'space';
+  board.appendChild(spacer1);
+  board.appendChild(cells[2]); // Switch 3
+  board.appendChild(cells[3]); // Switch 4
+  
+  // Bottom row: 8, 7, gap, 6, 5 (indices 7, 6, 5, 4) - reversed visual order
+  board.appendChild(cells[7]); // Switch 8
+  board.appendChild(cells[6]); // Switch 7
+  // Add spacer after switch 7
+  const spacer2 = document.createElement('div');
+  spacer2.className = 'space';
+  board.appendChild(spacer2);
+  board.appendChild(cells[5]); // Switch 6
+  board.appendChild(cells[4]); // Switch 5
 }
 
 function updateSwitchBoard(boardId, switchStates, lockStates, prefix) {
