@@ -363,28 +363,13 @@ const cells=[];
 for(let i=0;i<N;i++){
   const cell=makeCell(i);
   cells.push(cell);
+  boardEl.appendChild(cell);
+  if(i===1||i===5){
+    const spacer=document.createElement("div");
+    spacer.className="space";
+    boardEl.appendChild(spacer);
+  }
 }
-
-// Add switches to board in visual order
-// Top row: 1, 2, gap, 3, 4 (indices 0, 1, 2, 3)
-boardEl.appendChild(cells[0]); // Switch 1
-boardEl.appendChild(cells[1]); // Switch 2
-// Add spacer after switch 2
-const spacer1=document.createElement("div");
-spacer1.className="space";
-boardEl.appendChild(spacer1);
-boardEl.appendChild(cells[2]); // Switch 3
-boardEl.appendChild(cells[3]); // Switch 4
-
-// Bottom row: 8, 7, gap, 6, 5 (indices 7, 6, 5, 4) - reversed visual order
-boardEl.appendChild(cells[7]); // Switch 8
-boardEl.appendChild(cells[6]); // Switch 7
-// Add spacer after switch 7
-const spacer2=document.createElement("div");
-spacer2.className="space";
-boardEl.appendChild(spacer2);
-boardEl.appendChild(cells[5]); // Switch 6
-boardEl.appendChild(cells[4]); // Switch 5
 
 /* ========================  Event wiring  ======================== */
 manualBtn.onclick=()=>{
